@@ -1,12 +1,15 @@
-import type { Theme, SxProps, Breakpoint } from '@mui/material/styles';
+import type { Breakpoint, SxProps, Theme } from '@mui/material/styles';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { varAlpha } from 'minimal-shared/utils';
 
 import Box from '@mui/material/Box';
+import Collapse from '@mui/material/Collapse';
 import ListItem from '@mui/material/ListItem';
 import { useTheme } from '@mui/material/styles';
 import ListItemButton from '@mui/material/ListItemButton';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Drawer, { drawerClasses } from '@mui/material/Drawer';
 
 import { usePathname } from 'src/routes/hooks';
@@ -20,6 +23,7 @@ import { WorkspacesPopover } from '../components/workspaces-popover';
 
 import type { NavItem } from '../nav-config-dashboard';
 import type { WorkspacesPopoverProps } from '../components/workspaces-popover';
+
 
 // ----------------------------------------------------------------------
 
@@ -110,6 +114,13 @@ export function NavMobile({
 export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
   const pathname = usePathname();
 
+  // 🔹 cuál item padre está abierto (para el dropdown)
+  const [openItem, setOpenItem] = useState<string | null>(null);
+
+  const handleToggle = (title: string) => {
+    setOpenItem((prev) => (prev === title ? null : title));
+  };
+
   return (
     <>
       <Logo />
@@ -139,47 +150,108 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
             }}
           >
             {data.map((item) => {
-              const isActived = item.path === pathname;
+              const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+
+              const isChildActive =
+                hasChildren &&
+                item.children!.some((child) => child.path === pathname);
+
+              const isActived = item.path === pathname || isChildActive;
+              const isOpen = hasChildren && openItem === item.title;
 
               return (
-                <ListItem disableGutters disablePadding key={item.title}>
-                  <ListItemButton
-                    disableGutters
-                    component={RouterLink}
-                    href={item.path}
-                    sx={[
-                      (theme) => ({
-                        pl: 2,
-                        py: 1,
-                        gap: 2,
-                        pr: 1.5,
-                        borderRadius: 0.75,
-                        typography: 'body2',
-                        fontWeight: 'fontWeightMedium',
-                        color: theme.vars.palette.text.secondary,
-                        minHeight: 44,
-                        ...(isActived && {
-                          fontWeight: 'fontWeightSemiBold',
-                          color: theme.vars.palette.primary.main,
-                          bgcolor: varAlpha(theme.vars.palette.primary.mainChannel, 0.08),
-                          '&:hover': {
-                            bgcolor: varAlpha(theme.vars.palette.primary.mainChannel, 0.16),
-                          },
+                <Box key={item.title}>
+                  <ListItem disableGutters disablePadding>
+                    <ListItemButton
+                      disableGutters
+                      onClick={hasChildren ? () => handleToggle(item.title) : undefined}
+                      component={hasChildren ? 'div' : RouterLink}
+                      href={hasChildren ? undefined : item.path}
+                      sx={[
+                        (theme) => ({
+                          pl: 2,
+                          py: 1,
+                          gap: 2,
+                          pr: 1.5,
+                          borderRadius: 0.75,
+                          typography: 'body2',
+                          fontWeight: 'fontWeightMedium',
+                          color: theme.vars.palette.text.secondary,
+                          minHeight: 44,
+                          cursor: 'pointer',
+                          ...(isActived && {
+                            fontWeight: 'fontWeightSemiBold',
+                            color: theme.vars.palette.primary.main,
+                            bgcolor: varAlpha(theme.vars.palette.primary.mainChannel, 0.08),
+                            '&:hover': {
+                              bgcolor: varAlpha(theme.vars.palette.primary.mainChannel, 0.16),
+                            },
+                          }),
                         }),
-                      }),
-                    ]}
-                  >
-                    <Box component="span" sx={{ width: 24, height: 24 }}>
-                      {item.icon}
-                    </Box>
+                      ]}
+                    >
+                      <Box component="span" sx={{ width: 24, height: 24 }}>
+                        {item.icon}
+                      </Box>
 
-                    <Box component="span" sx={{ flexGrow: 1 }}>
-                      {item.title}
-                    </Box>
+                      <Box component="span" sx={{ flexGrow: 1 }}>
+                        {item.title}
+                      </Box>
 
-                    {item.info && item.info}
-                  </ListItemButton>
-                </ListItem>
+                      {hasChildren ? (
+                        isOpen ? <ExpandLessIcon fontSize="small" /> : <ExpandMoreIcon fontSize="small" />
+                      ) : (
+                        item.info && item.info
+                      )}
+                    </ListItemButton>
+                  </ListItem>
+
+                  {hasChildren && (
+                    <Collapse in={isOpen} timeout="auto" unmountOnExit>
+                      <Box component="ul" sx={{ pl: 5, mt: 0.5 }}>
+                        {item.children!.map((child) => {
+                          const isChildSelected = child.path === pathname;
+
+                          return (
+                            <ListItemButton
+                              key={child.title}
+                              component={RouterLink}
+                              href={child.path}
+                              sx={(theme) => ({
+                                typography: 'body2',
+                                color: theme.vars.palette.text.secondary,
+                                borderRadius: 0.75,
+                                py: 0.75,
+                                mb: 0.25,
+                                ...(isChildSelected && {
+                                  color: theme.vars.palette.primary.main,
+                                  bgcolor: varAlpha(
+                                    theme.vars.palette.primary.mainChannel,
+                                    0.08
+                                  ),
+                                  '&:hover': {
+                                    bgcolor: varAlpha(
+                                      theme.vars.palette.primary.mainChannel,
+                                      0.16
+                                    ),
+                                  },
+                                }),
+                                '&:hover': {
+                                  bgcolor: varAlpha(
+                                    theme.vars.palette.primary.mainChannel,
+                                    0.08
+                                  ),
+                                },
+                              })}
+                            >
+                              {child.title}
+                            </ListItemButton>
+                          );
+                        })}
+                      </Box>
+                    </Collapse>
+                  )}
+                </Box>
               );
             })}
           </Box>

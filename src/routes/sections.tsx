@@ -18,6 +18,7 @@ export const UserPage = lazy(() => import('src/pages/user'));
 export const NationalPage = lazy(() => import('src/pages/national'));
 export const RegionalPage = lazy(() => import('src/pages/regional'));
 export const SectionalPage = lazy(() => import('src/pages/sectional'));
+export const DestPage = lazy(() => import('src/pages/dest'));
 export const SignInPage = lazy(() => import('src/pages/sign-in'));
 export const ProductsPage = lazy(() => import('src/pages/products'));
 export const Page404 = lazy(() => import('src/pages/page-not-found'));
@@ -57,6 +58,7 @@ export const routesSection: RouteObject[] = [
       { path: 'national', element: <NationalPage /> },
       { path: 'regional', element: <RegionalPage /> },
       { path: 'sectional', element: <SectionalPage /> },
+      { path: 'dest', element: <DestPage/> },
       { path: 'products', element: <ProductsPage /> },
       { path: 'blog', element: <BlogPage /> },
     ],
