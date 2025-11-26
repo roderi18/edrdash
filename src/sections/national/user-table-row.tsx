@@ -9,6 +9,8 @@ import MenuList from '@mui/material/MenuList';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
+import Link from '@mui/material/Link';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
@@ -29,9 +31,11 @@ type UserTableRowProps = {
   row: UserProps;
   selected: boolean;
   onSelectRow: () => void;
+  /** Ruta opcional para convertir el nombre en un link (ej: /regional/:id) */
+  nameTo?: string;
 };
 
-export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
+export function UserTableRow({ row, selected, onSelectRow, nameTo }: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
   const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
@@ -58,7 +62,19 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
             }}
           >
             <Avatar alt={row.name} src={row.avatarUrl} />
-            {row.name}
+            {nameTo ? (
+              <Link
+                component={RouterLink}
+                to={nameTo}
+                underline="hover"
+                color="inherit"
+                sx={{ fontWeight: 500 }}
+              >
+                {row.name}
+              </Link>
+            ) : (
+              row.name
+            )}
           </Box>
         </TableCell>
 

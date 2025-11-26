@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -9,7 +10,6 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
@@ -22,17 +22,41 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
+import { NATIONAL, REGIONAL } from '../../../_mock/hierarchy';
 import type { UserProps } from '../user-table-row';
 
 // ----------------------------------------------------------------------
 
 export function RegionalView() {
   const table = useTable();
-
   const [filterName, setFilterName] = useState('');
 
+  const { id } = useParams<{ id: string }>();
+
+  // Si NO hay id → mostrar todos los regionales
+  // Si hay id → filtrar por national.regionals
+  let regionalRows = REGIONAL;
+
+  if (id) {
+    const national = NATIONAL.find((n) => n.id === id);
+    regionalRows = national
+      ? REGIONAL.filter((r) => national.regionals.includes(r.id))
+      : [];
+  }
+
+  // Adaptar al formato UserProps
+  const mappedRows: UserProps[] = regionalRows.map((r, index) => ({
+    id: r.id,
+    name: r.name,
+    avatarUrl: '/assets/images/avatar/avatar_1.jpg',
+    company: `Líder regional ${index + 1}`,
+    role: `Seccionales: ${r.sectionals.length}`,
+    isVerified: true,
+    status: 'active',
+  }));
+
   const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+    inputData: mappedRows,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -50,7 +74,14 @@ export function RegionalView() {
       >
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
           Nivel Regional
+          {id && (
+            <>
+              {' '}
+              – Filtrado por <b>{id}</b>
+            </>
+          )}
         </Typography>
+
         <Button
           variant="contained"
           color="inherit"
@@ -76,13 +107,13 @@ export function RegionalView() {
               <UserTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={mappedRows.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    mappedRows.map((row) => row.id)
                   )
                 }
                 headLabel={[
@@ -111,7 +142,11 @@ export function RegionalView() {
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(
+                    table.page,
+                    table.rowsPerPage,
+                    mappedRows.length
+                  )}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -123,7 +158,7 @@ export function RegionalView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={mappedRows.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}

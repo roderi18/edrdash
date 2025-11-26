@@ -154,10 +154,17 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
 
               const isChildActive =
                 hasChildren &&
-                item.children!.some((child) => child.path === pathname);
+                item.children!.some((child) => pathname.startsWith(child.path));
 
-              const isActived = item.path === pathname || isChildActive;
-              const isOpen = hasChildren && openItem === item.title;
+              const isActived =
+                pathname === item.path ||
+                pathname.startsWith(`${item.path}/`) ||
+                isChildActive;
+
+              const isOpen =
+                hasChildren &&
+                (openItem === item.title || isChildActive);
+
 
               return (
                 <Box key={item.title}>
@@ -210,7 +217,9 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
                     <Collapse in={isOpen} timeout="auto" unmountOnExit>
                       <Box component="ul" sx={{ pl: 5, mt: 0.5 }}>
                         {item.children!.map((child) => {
-                          const isChildSelected = child.path === pathname;
+                          const isChildSelected =
+                            pathname === child.path ||
+                            pathname.startsWith(`${child.path}/`);
 
                           return (
                             <ListItemButton

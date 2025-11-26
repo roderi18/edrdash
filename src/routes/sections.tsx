@@ -55,14 +55,25 @@ export const routesSection: RouteObject[] = [
     children: [
       { index: true, element: <DashboardPage /> },
       { path: 'user', element: <UserPage /> },
+
+      // --- NIVEL NACIONAL ---
       { path: 'national', element: <NationalPage /> },
-      { path: 'regional', element: <RegionalPage /> },
+
+      // --- NIVEL REGIONAL ---
+      { path: 'regional', element: <RegionalPage /> },        // lista completa
+      { path: 'regional/:id', element: <RegionalPage /> },    // 👈 necesario para mostrar regionales por nacional
+
+      // --- SECTIONAL ---
       { path: 'sectional', element: <SectionalPage /> },
+
+      // --- DEST ---
       { path: 'dest', element: <DestPage/> },
+
       { path: 'products', element: <ProductsPage /> },
       { path: 'blog', element: <BlogPage /> },
     ],
   },
+
   {
     path: 'sign-in',
     element: (

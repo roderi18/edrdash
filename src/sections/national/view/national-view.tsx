@@ -9,7 +9,6 @@ import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { _users } from 'src/_mock';
 import { DashboardContent } from 'src/layouts/dashboard';
 
 import { Iconify } from 'src/components/iconify';
@@ -22,17 +21,28 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
+import { NATIONAL } from '../../../_mock/hierarchy';
 import type { UserProps } from '../user-table-row';
 
 // ----------------------------------------------------------------------
 
 export function NationalView() {
   const table = useTable();
-
   const [filterName, setFilterName] = useState('');
 
+  // ⭐ Convertimos el mock NATIONAL al formato que usa tu tabla
+  const nationalMapped: UserProps[] = NATIONAL.map((n) => ({
+    id: n.id,
+    name: n.name,
+    avatarUrl: '/assets/images/avatar/avatar_1.jpg', // Dummy
+    company: `Regionales: ${n.regionals.length}`,
+    role: '—', // No aplica aquí (se rellena por diseño)
+    isVerified: true,
+    status: 'active',
+  }));
+
   const dataFiltered: UserProps[] = applyFilter({
-    inputData: _users,
+    inputData: nationalMapped,
     comparator: getComparator(table.order, table.orderBy),
     filterName,
   });
@@ -51,6 +61,7 @@ export function NationalView() {
         <Typography variant="h4" sx={{ flexGrow: 1 }}>
           Nivel Nacional
         </Typography>
+
         <Button
           variant="contained"
           color="inherit"
@@ -76,13 +87,13 @@ export function NationalView() {
               <UserTableHead
                 order={table.order}
                 orderBy={table.orderBy}
-                rowCount={_users.length}
+                rowCount={nationalMapped.length}
                 numSelected={table.selected.length}
                 onSort={table.onSort}
                 onSelectAllRows={(checked) =>
                   table.onSelectAllRows(
                     checked,
-                    _users.map((user) => user.id)
+                    nationalMapped.map((row) => row.id)
                   )
                 }
                 headLabel={[
@@ -94,6 +105,7 @@ export function NationalView() {
                   { id: '' },
                 ]}
               />
+
               <TableBody>
                 {dataFiltered
                   .slice(
@@ -106,12 +118,18 @@ export function NationalView() {
                       row={row}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
+                      nameTo={`/regional/${row.id}`}   // 👈 link hacia la lista de regionales de ese nacional
                     />
-                  ))}
+                  ))
+                }
 
                 <TableEmptyRows
                   height={68}
-                  emptyRows={emptyRows(table.page, table.rowsPerPage, _users.length)}
+                  emptyRows={emptyRows(
+                    table.page,
+                    table.rowsPerPage,
+                    nationalMapped.length
+                  )}
                 />
 
                 {notFound && <TableNoData searchQuery={filterName} />}
@@ -123,7 +141,7 @@ export function NationalView() {
         <TablePagination
           component="div"
           page={table.page}
-          count={_users.length}
+          count={nationalMapped.length}
           rowsPerPage={table.rowsPerPage}
           onPageChange={table.onChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -175,7 +193,7 @@ export function useTable() {
     setPage(0);
   }, []);
 
-  const onChangePage = useCallback((event: unknown, newPage: number) => {
+  const onChangePage = useCallback((_event: unknown, newPage: number) => {
     setPage(newPage);
   }, []);
 
