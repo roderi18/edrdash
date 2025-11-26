@@ -1,23 +1,62 @@
+// src/_mock/hierarchy.ts
+
+// Puedes usar este tipo si quieres, si no igual funciona sin él.
+export type NationalContact = {
+  id: string;
+  userId: string;
+  role: string;
+  phone: string;
+  order: number; // 1 = mayor jerarquía
+};
+
 export const NATIONAL = [
   {
     id: 'national-1',
     name: 'Nivel Nacional Central',
     regionals: ['regional-1', 'regional-2'],
+    contacts: [
+      { id: 'n1-c1', userId: 'user-1', role: 'Coordinador nacional', phone: '+1 (809) 000-0001', order: 1 },
+      { id: 'n1-c2', userId: 'user-2', role: 'Subcoordinador nacional', phone: '+1 (809) 000-0002', order: 2 },
+      { id: 'n1-c3', userId: 'user-3', role: 'Secretario nacional',   phone: '+1 (809) 000-0003', order: 3 },
+      { id: 'n1-c4', userId: 'user-4', role: 'Tesorero nacional',     phone: '+1 (809) 000-0004', order: 4 },
+      { id: 'n1-c5', userId: 'user-5', role: 'Vocal nacional',        phone: '+1 (809) 000-0005', order: 5 },
+    ] as NationalContact[],
   },
   {
     id: 'national-2',
     name: 'Nivel Nacional Este',
     regionals: ['regional-3'],
+    contacts: [
+      { id: 'n2-c1', userId: 'user-6',  role: 'Coordinador nacional', phone: '+1 (809) 000-0011', order: 1 },
+      { id: 'n2-c2', userId: 'user-7',  role: 'Subcoordinador nacional', phone: '+1 (809) 000-0012', order: 2 },
+      { id: 'n2-c3', userId: 'user-8',  role: 'Secretario nacional',   phone: '+1 (809) 000-0013', order: 3 },
+      { id: 'n2-c4', userId: 'user-9',  role: 'Tesorero nacional',     phone: '+1 (809) 000-0014', order: 4 },
+      { id: 'n2-c5', userId: 'user-10', role: 'Vocal nacional',        phone: '+1 (809) 000-0015', order: 5 },
+    ] as NationalContact[],
   },
   {
     id: 'national-3',
     name: 'Nivel Nacional Norte',
     regionals: ['regional-4', 'regional-5'],
+    contacts: [
+      { id: 'n3-c1', userId: 'user-3',  role: 'Coordinador nacional',     phone: '+1 (809) 000-0021', order: 1 },
+      { id: 'n3-c2', userId: 'user-11', role: 'Subcoordinador nacional',  phone: '+1 (809) 000-0022', order: 2 },
+      { id: 'n3-c3', userId: 'user-4',  role: 'Secretario nacional',      phone: '+1 (809) 000-0023', order: 3 },
+      { id: 'n3-c4', userId: 'user-6',  role: 'Tesorero nacional',        phone: '+1 (809) 000-0024', order: 4 },
+      { id: 'n3-c5', userId: 'user-12', role: 'Vocal nacional',           phone: '+1 (809) 000-0025', order: 5 },
+    ] as NationalContact[],
   },
   {
     id: 'national-4',
     name: 'Nivel Nacional Oeste',
     regionals: ['regional-6'],
+    contacts: [
+      { id: 'n4-c1', userId: 'user-8',  role: 'Coordinador nacional',    phone: '+1 (809) 000-0031', order: 1 },
+      { id: 'n4-c2', userId: 'user-9',  role: 'Subcoordinador nacional', phone: '+1 (809) 000-0032', order: 2 },
+      { id: 'n4-c3', userId: 'user-10', role: 'Secretario nacional',     phone: '+1 (809) 000-0033', order: 3 },
+      { id: 'n4-c4', userId: 'user-11', role: 'Tesorero nacional',       phone: '+1 (809) 000-0034', order: 4 },
+      { id: 'n4-c5', userId: 'user-12', role: 'Vocal nacional',          phone: '+1 (809) 000-0035', order: 5 },
+    ] as NationalContact[],
   },
 ];
 

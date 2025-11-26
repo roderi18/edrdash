@@ -29,8 +29,10 @@ type UserTableRowProps = {
   row: UserProps;
   selected: boolean;
   onSelectRow: () => void;
-  // 👇 Nuevo: para hacer clickeable la 2da columna (Líder)
+  // ya lo tenías para la 2da columna (Regionales: X)
   onCompanyClick?: () => void;
+  // NUEVO: clic en la 1ra columna (nombre / región)
+  onNameClick?: () => void;
 };
 
 export function UserTableRow({
@@ -38,6 +40,7 @@ export function UserTableRow({
   selected,
   onSelectRow,
   onCompanyClick,
+  onNameClick,
 }: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
@@ -59,21 +62,31 @@ export function UserTableRow({
           <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
         </TableCell>
 
-        {/* Columna Región (nombre) – SIN navegación ahora */}
+        {/* Columna 1: nombre / región */}
         <TableCell component="th" scope="row">
           <Box
+            onClick={onNameClick}
             sx={{
               gap: 2,
               display: 'flex',
               alignItems: 'center',
+              ...(onNameClick && {
+                cursor: 'pointer',
+                '& span.region-name': {
+                  textDecoration: 'none',
+                },
+                '&:hover span.region-name': {
+                  textDecoration: 'underline',
+                },
+              }),
             }}
           >
             <Avatar alt={row.name} src={row.avatarUrl} />
-            {row.name}
+            <span className="region-name">{row.name}</span>
           </Box>
         </TableCell>
 
-        {/* Columna Líder – aquí va el clic para ir a Regional */}
+        {/* Columna 2: Líder (Regionales: X) */}
         <TableCell
           onClick={onCompanyClick}
           sx={
