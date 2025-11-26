@@ -29,14 +29,27 @@ type UserTableRowProps = {
   row: UserProps;
   selected: boolean;
   onSelectRow: () => void;
+
+  // 👇 NUEVOS
+  onNameClick?: () => void;
+  onCompanyClick?: () => void;
 };
 
-export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) {
+export function UserTableRow({
+  row,
+  selected,
+  onSelectRow,
+  onNameClick,
+  onCompanyClick,
+}: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
-  const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpenPopover(event.currentTarget);
-  }, []);
+  const handleOpenPopover = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setOpenPopover(event.currentTarget);
+    },
+    []
+  );
 
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
@@ -49,33 +62,59 @@ export function UserTableRow({ row, selected, onSelectRow }: UserTableRowProps) 
           <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
         </TableCell>
 
+        {/* COLUMNA 1: NOMBRE / REGION */}
         <TableCell component="th" scope="row">
           <Box
+            onClick={onNameClick}
             sx={{
               gap: 2,
               display: 'flex',
               alignItems: 'center',
+              ...(onNameClick && {
+                cursor: 'pointer',
+                '& span.region-name': { textDecoration: 'none' },
+                '&:hover span.region-name': { textDecoration: 'underline' },
+              }),
             }}
           >
             <Avatar alt={row.name} src={row.avatarUrl} />
-            {row.name}
+            <span className="region-name">{row.name}</span>
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
+        {/* COLUMNA 2: COMPANY (CLICKEABLE) */}
+        <TableCell
+          onClick={onCompanyClick}
+          sx={
+            onCompanyClick
+              ? {
+                  cursor: 'pointer',
+                  '&:hover': { textDecoration: 'underline' },
+                }
+              : undefined
+          }
+        >
+          {row.company}
+        </TableCell>
 
         <TableCell>{row.role}</TableCell>
 
         <TableCell align="center">
           {row.isVerified ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
+            <Iconify
+              width={22}
+              icon="solar:check-circle-bold"
+              sx={{ color: 'success.main' }}
+            />
           ) : (
             '-'
           )}
         </TableCell>
 
         <TableCell>
-          <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
+          <Label color={(row.status === 'banned' && 'error') || 'success'}>
+            {row.status}
+          </Label>
         </TableCell>
 
         <TableCell align="right">

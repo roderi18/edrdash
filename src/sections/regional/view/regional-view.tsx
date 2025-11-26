@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useCallback, useMemo } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -9,6 +9,14 @@ import TableBody from '@mui/material/TableBody';
 import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemText from '@mui/material/ListItemText';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 
@@ -22,19 +30,22 @@ import { TableEmptyRows } from '../table-empty-rows';
 import { UserTableToolbar } from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-import { NATIONAL, REGIONAL } from '../../../_mock/hierarchy';
+import { NATIONAL, REGIONAL, SECTIONAL, USERS } from '../../../_mock/hierarchy';
 import type { UserProps } from '../user-table-row';
 
 // ----------------------------------------------------------------------
 
 export function RegionalView() {
   const table = useTable();
-  const [filterName, setFilterName] = useState('');
+  const navigate = useNavigate();
 
   const { id } = useParams<{ id: string }>();
 
-  // Si NO hay id → mostrar todos los regionales
-  // Si hay id → filtrar por national.regionals
+  const [filterName, setFilterName] = useState('');
+  const [selectedRegionalId, setSelectedRegionalId] = useState<string | null>(null);
+  const [infoOpen, setInfoOpen] = useState(false);
+
+  // 1) Obtener regionales
   let regionalRows = REGIONAL;
 
   if (id) {
@@ -44,17 +55,22 @@ export function RegionalView() {
       : [];
   }
 
-  // Adaptar al formato UserProps
-  const mappedRows: UserProps[] = regionalRows.map((r, index) => ({
-    id: r.id,
-    name: r.name,
-    avatarUrl: '/assets/images/avatar/avatar_1.jpg',
-    company: `Líder regional ${index + 1}`,
-    role: `Seccionales: ${r.sectionals.length}`,
-    isVerified: true,
-    status: 'active',
-  }));
+  // 2) Adaptar a la tabla
+  const mappedRows: UserProps[] = useMemo(
+    () =>
+      regionalRows.map((region, index) => ({
+        id: region.id,
+        name: region.name,
+        avatarUrl: `/assets/images/avatar/avatar_${index + 1}.jpg`,
+        company: `Seccionales: ${region.sectionals.length}`,
+        role: '—',
+        isVerified: true,
+        status: 'active',
+      })),
+    [regionalRows]
+  );
 
+  // Filtrar tabla
   const dataFiltered: UserProps[] = applyFilter({
     inputData: mappedRows,
     comparator: getComparator(table.order, table.orderBy),
@@ -62,6 +78,53 @@ export function RegionalView() {
   });
 
   const notFound = !dataFiltered.length && !!filterName;
+
+  // ACCIONES --------------------------------------------------------------------
+
+  // Navegar hacia SECTIONAL
+  const handleGoToSectional = useCallback(
+    (regionalId: string) => {
+      navigate(`/sectional/${regionalId}`);
+    },
+    [navigate]
+  );
+
+  // Abrir modal de info
+  const handleSelectRegional = useCallback((regionalId: string) => {
+    setSelectedRegionalId(regionalId);
+    setInfoOpen(true);
+  }, []);
+
+  const handleCloseInfo = useCallback(() => {
+    setInfoOpen(false);
+  }, []);
+
+  // Regional seleccionado para modal
+  const selectedRegional = useMemo(
+    () => REGIONAL.find((r) => r.id === selectedRegionalId) ?? null,
+    [selectedRegionalId]
+  );
+
+  // Construir jerarquía desde mock
+  const teamFromMock = useMemo(() => {
+    if (!selectedRegional || !selectedRegional.contacts) return [];
+
+    return [...selectedRegional.contacts]
+      .sort((a, b) => a.order - b.order)
+      .map((contact) => {
+        const user = USERS.find((u) => u.id === contact.userId);
+        return {
+          id: contact.id,
+          order: contact.order,
+          name: user?.name ?? 'Sin nombre',
+          role: contact.role,
+          phone: contact.phone,
+          avatarUrl: user?.avatarUrl,
+        };
+      });
+  }, [selectedRegional]);
+
+  // ----------------------------------------------------------------------
 
   return (
     <DashboardContent>
@@ -76,8 +139,7 @@ export function RegionalView() {
           Nivel Regional
           {id && (
             <>
-              {' '}
-              – Filtrado por <b>{id}</b>
+              {' '}– Filtrado por <b>{id}</b>
             </>
           )}
         </Typography>
@@ -92,6 +154,7 @@ export function RegionalView() {
       </Box>
 
       <Card>
+        {/* BARRA DE BÚSQUEDA */}
         <UserTableToolbar
           numSelected={table.selected.length}
           filterName={filterName}
@@ -104,6 +167,7 @@ export function RegionalView() {
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
+              {/* HEAD */}
               <UserTableHead
                 order={table.order}
                 orderBy={table.orderBy}
@@ -117,14 +181,16 @@ export function RegionalView() {
                   )
                 }
                 headLabel={[
-                  { id: 'name', label: 'Sección' },
-                  { id: 'company', label: 'Líder' },
-                  { id: 'role', label: 'Destacamento' },
-                  { id: 'isVerified', label: 'Membresía 2026', align: 'center' },
+                  { id: 'name', label: 'Región' },
+                  { id: 'company', label: 'Seccionales' },
+                  { id: 'role', label: '—' },
+                  { id: 'isVerified', label: '¿?', align: 'center' },
                   { id: 'status', label: 'Estado' },
                   { id: '' },
                 ]}
               />
+
+              {/* BODY */}
               <TableBody>
                 {dataFiltered
                   .slice(
@@ -137,6 +203,8 @@ export function RegionalView() {
                       row={row}
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
+                      onCompanyClick={() => handleGoToSectional(row.id)}
+                      onNameClick={() => handleSelectRegional(row.id)}
                     />
                   ))}
 
@@ -165,6 +233,60 @@ export function RegionalView() {
           onRowsPerPageChange={table.onChangeRowsPerPage}
         />
       </Card>
+
+      {/* MODAL FLOTANTE */}
+      <Dialog
+        open={infoOpen && !!selectedRegional}
+        onClose={handleCloseInfo}
+        maxWidth="sm"
+        fullWidth
+      >
+        {selectedRegional && (
+          <DialogContent sx={{ p: 4 }}>
+            <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 3 }}>
+              <Avatar
+                src="/assets/images/avatar/avatar_1.jpg"
+                alt={selectedRegional.name}
+                sx={{ width: 72, height: 72 }}
+              />
+              <Box>
+                <Typography variant="h6">{selectedRegional.name}</Typography>
+                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                  Ejemplo de jerarquía para esta región.
+                </Typography>
+              </Box>
+            </Stack>
+
+            <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
+              Equipo de ejemplo
+            </Typography>
+
+            <List disablePadding>
+              {teamFromMock.map((member) => (
+                <ListItem key={member.id} sx={{ px: 0, py: 0.75 }}>
+                  <ListItemAvatar>
+                    <Avatar
+                      src={member.avatarUrl}
+                      sx={{ width: 32, height: 32 }}
+                    >
+                      {member.name.charAt(0)}
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText
+                    primary={`${member.order}. ${member.name} · ${member.role}`}
+                    secondary={member.phone}
+                    primaryTypographyProps={{ variant: 'body2' }}
+                    secondaryTypographyProps={{
+                      variant: 'caption',
+                      sx: { color: 'text.secondary' },
+                    }}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </DialogContent>
+        )}
+      </Dialog>
     </DashboardContent>
   );
 }

@@ -13,85 +13,151 @@ export const NATIONAL = [
   {
     id: 'national-1',
     name: 'Nivel Nacional Central',
+    avatarUrl: '/assets/logos/logonacional.png',
     regionals: ['regional-1', 'regional-2'],
+
+    leader: {
+      userId: 'user-1',
+      name: 'Juan Pérez',
+      avatarUrl: '/assets/images/avatar/avatar_1.jpg',
+      role: 'Coordinador Nacional',
+      phone: '809-555-9001',
+      email: 'juan.perez@exploradores.do',
+    },
+
     contacts: [
-      { id: 'n1-c1', userId: 'user-1', role: 'Coordinador nacional', phone: '+1 (809) 000-0001', order: 1 },
-      { id: 'n1-c2', userId: 'user-2', role: 'Subcoordinador nacional', phone: '+1 (809) 000-0002', order: 2 },
-      { id: 'n1-c3', userId: 'user-3', role: 'Secretario nacional',   phone: '+1 (809) 000-0003', order: 3 },
-      { id: 'n1-c4', userId: 'user-4', role: 'Tesorero nacional',     phone: '+1 (809) 000-0004', order: 4 },
-      { id: 'n1-c5', userId: 'user-5', role: 'Vocal nacional',        phone: '+1 (809) 000-0005', order: 5 },
-    ] as NationalContact[],
+      { id: 'n1-c1', userId: 'user-2', role: 'Subcoordinador Nacional', phone: '809-555-0002', order: 2 },
+      { id: 'n1-c2', userId: 'user-3', role: 'Secretario Nacional', phone: '809-555-0003', order: 3 },
+      { id: 'n1-c3', userId: 'user-4', role: 'Tesorero Nacional', phone: '809-555-0004', order: 4 },
+      { id: 'n1-c4', userId: 'user-5', role: 'Vocal Nacional', phone: '809-555-0005', order: 5 },
+    ],
   },
+
   {
     id: 'national-2',
     name: 'Nivel Nacional Este',
+    avatarUrl: '/assets/logos/logonacional.png',
     regionals: ['regional-3'],
+
+    leader: {
+      userId: 'user-6',
+      name: 'Luisa Ramírez',
+      avatarUrl: '/assets/images/avatar/avatar_6.jpg',
+      role: 'Coordinadora Nacional',
+      phone: '809-555-9002',
+      email: 'luisa.ramirez@exploradores.do',
+    },
+
     contacts: [
-      { id: 'n2-c1', userId: 'user-6',  role: 'Coordinador nacional', phone: '+1 (809) 000-0011', order: 1 },
-      { id: 'n2-c2', userId: 'user-7',  role: 'Subcoordinador nacional', phone: '+1 (809) 000-0012', order: 2 },
-      { id: 'n2-c3', userId: 'user-8',  role: 'Secretario nacional',   phone: '+1 (809) 000-0013', order: 3 },
-      { id: 'n2-c4', userId: 'user-9',  role: 'Tesorero nacional',     phone: '+1 (809) 000-0014', order: 4 },
-      { id: 'n2-c5', userId: 'user-10', role: 'Vocal nacional',        phone: '+1 (809) 000-0015', order: 5 },
-    ] as NationalContact[],
+      { id: 'n2-c1', userId: 'user-7', role: 'Subcoordinador Nacional', phone: '809-555-0012', order: 2 },
+      { id: 'n2-c2', userId: 'user-8', role: 'Secretaria Nacional', phone: '809-555-0013', order: 3 },
+      { id: 'n2-c3', userId: 'user-9', role: 'Tesorera Nacional', phone: '809-555-0014', order: 4 },
+      { id: 'n2-c4', userId: 'user-10', role: 'Vocal Nacional', phone: '809-555-0015', order: 5 },
+    ],
   },
+
   {
     id: 'national-3',
     name: 'Nivel Nacional Norte',
+    avatarUrl: '/assets/logos/logonacional.png',
     regionals: ['regional-4', 'regional-5'],
+
+    leader: {
+      userId: 'user-3',
+      name: 'Carlos Díaz',
+      avatarUrl: '/assets/images/avatar/avatar_3.jpg',
+      role: 'Coordinador Nacional',
+      phone: '809-555-9003',
+      email: 'carlos.diaz@exploradores.do',
+    },
+
     contacts: [
-      { id: 'n3-c1', userId: 'user-3',  role: 'Coordinador nacional',     phone: '+1 (809) 000-0021', order: 1 },
-      { id: 'n3-c2', userId: 'user-11', role: 'Subcoordinador nacional',  phone: '+1 (809) 000-0022', order: 2 },
-      { id: 'n3-c3', userId: 'user-4',  role: 'Secretario nacional',      phone: '+1 (809) 000-0023', order: 3 },
-      { id: 'n3-c4', userId: 'user-6',  role: 'Tesorero nacional',        phone: '+1 (809) 000-0024', order: 4 },
-      { id: 'n3-c5', userId: 'user-12', role: 'Vocal nacional',           phone: '+1 (809) 000-0025', order: 5 },
-    ] as NationalContact[],
+      { id: 'n3-c2', userId: 'user-11', role: 'Subcoordinador Nacional', phone: '809-555-0022', order: 2 },
+      { id: 'n3-c3', userId: 'user-4', role: 'Secretario Nacional', phone: '809-555-0023', order: 3 },
+      { id: 'n3-c4', userId: 'user-6', role: 'Tesorero Nacional', phone: '809-555-0024', order: 4 },
+      { id: 'n3-c5', userId: 'user-12', role: 'Vocal Nacional', phone: '809-555-0025', order: 5 },
+    ],
   },
+
   {
     id: 'national-4',
     name: 'Nivel Nacional Oeste',
+    avatarUrl: '/assets/logos/logonacional.png',
     regionals: ['regional-6'],
+
+    leader: {
+      userId: 'user-8',
+      name: 'David Hernández',
+      avatarUrl: '/assets/images/avatar/avatar_8.jpg',
+      role: 'Coordinador Nacional',
+      phone: '809-555-9004',
+      email: 'david.hernandez@exploradores.do',
+    },
+
     contacts: [
-      { id: 'n4-c1', userId: 'user-8',  role: 'Coordinador nacional',    phone: '+1 (809) 000-0031', order: 1 },
-      { id: 'n4-c2', userId: 'user-9',  role: 'Subcoordinador nacional', phone: '+1 (809) 000-0032', order: 2 },
-      { id: 'n4-c3', userId: 'user-10', role: 'Secretario nacional',     phone: '+1 (809) 000-0033', order: 3 },
-      { id: 'n4-c4', userId: 'user-11', role: 'Tesorero nacional',       phone: '+1 (809) 000-0034', order: 4 },
-      { id: 'n4-c5', userId: 'user-12', role: 'Vocal nacional',          phone: '+1 (809) 000-0035', order: 5 },
-    ] as NationalContact[],
+      { id: 'n4-c2', userId: 'user-9', role: 'Subcoordinador Nacional', phone: '809-555-0032', order: 2 },
+      { id: 'n4-c3', userId: 'user-10', role: 'Secretaria Nacional', phone: '809-555-0033', order: 3 },
+      { id: 'n4-c4', userId: 'user-11', role: 'Tesorero Nacional', phone: '809-555-0034', order: 4 },
+      { id: 'n4-c5', userId: 'user-12', role: 'Vocal Nacional', phone: '809-555-0035', order: 5 },
+    ],
   },
 ];
+
 
 export const REGIONAL = [
   {
     id: 'regional-1',
     name: 'Región Central A',
     sectionals: ['sec-1', 'sec-2'],
+    contacts: [
+      { id: 'r1-c1', userId: 'user-1', order: 1, role: 'Director Regional', phone: '809-555-1111' },
+      { id: 'r1-c2', userId: 'user-2', order: 2, role: 'Subdirector Regional', phone: '809-555-2222' },
+      { id: 'r1-c3', userId: 'user-3', order: 3, role: 'Secretario', phone: '809-555-3333' },
+      { id: 'r1-c4', userId: 'user-4', order: 4, role: 'Tesorero', phone: '809-555-4444' },
+      { id: 'r1-c5', userId: 'user-5', order: 5, role: 'Asistente', phone: '809-555-5555' },
+    ],
   },
   {
     id: 'regional-2',
     name: 'Región Central B',
     sectionals: ['sec-3'],
+    contacts: [
+      { id: 'r2-c1', userId: 'user-6', order: 1, role: 'Director Regional', phone: '809-555-1112' },
+      { id: 'r2-c2', userId: 'user-7', order: 2, role: 'Subdirector Regional', phone: '809-555-2223' },
+      { id: 'r2-c3', userId: 'user-8', order: 3, role: 'Secretario', phone: '809-555-3334' },
+      { id: 'r2-c4', userId: 'user-9', order: 4, role: 'Tesorero', phone: '809-555-4445' },
+      { id: 'r2-c5', userId: 'user-10', order: 5, role: 'Asistente', phone: '809-555-5556' },
+    ],
   },
   {
     id: 'regional-3',
     name: 'Región Este A',
     sectionals: ['sec-4'],
+    contacts: [
+      { id: 'r3-c1', userId: 'user-11', order: 1, role: 'Director Regional', phone: '809-555-1113' },
+      { id: 'r3-c2', userId: 'user-12', order: 2, role: 'Subdirector Regional', phone: '809-555-2224' },
+    ],
   },
   {
     id: 'regional-4',
     name: 'Región Norte A',
     sectionals: ['sec-5', 'sec-6'],
+    contacts: [],
   },
   {
     id: 'regional-5',
     name: 'Región Norte B',
     sectionals: ['sec-7'],
+    contacts: [],
   },
   {
     id: 'regional-6',
     name: 'Región Oeste A',
     sectionals: ['sec-8'],
+    contacts: [],
   },
 ];
+
 
 export const SECTIONAL = [
   {
