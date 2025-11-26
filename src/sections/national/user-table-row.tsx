@@ -9,8 +9,6 @@ import MenuList from '@mui/material/MenuList';
 import TableCell from '@mui/material/TableCell';
 import IconButton from '@mui/material/IconButton';
 import MenuItem, { menuItemClasses } from '@mui/material/MenuItem';
-import Link from '@mui/material/Link';
-import { Link as RouterLink } from 'react-router-dom';
 
 import { Label } from 'src/components/label';
 import { Iconify } from 'src/components/iconify';
@@ -31,16 +29,24 @@ type UserTableRowProps = {
   row: UserProps;
   selected: boolean;
   onSelectRow: () => void;
-  /** Ruta opcional para convertir el nombre en un link (ej: /regional/:id) */
-  nameTo?: string;
+  // 👇 Nuevo: para hacer clickeable la 2da columna (Líder)
+  onCompanyClick?: () => void;
 };
 
-export function UserTableRow({ row, selected, onSelectRow, nameTo }: UserTableRowProps) {
+export function UserTableRow({
+  row,
+  selected,
+  onSelectRow,
+  onCompanyClick,
+}: UserTableRowProps) {
   const [openPopover, setOpenPopover] = useState<HTMLButtonElement | null>(null);
 
-  const handleOpenPopover = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
-    setOpenPopover(event.currentTarget);
-  }, []);
+  const handleOpenPopover = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      setOpenPopover(event.currentTarget);
+    },
+    []
+  );
 
   const handleClosePopover = useCallback(() => {
     setOpenPopover(null);
@@ -53,6 +59,7 @@ export function UserTableRow({ row, selected, onSelectRow, nameTo }: UserTableRo
           <Checkbox disableRipple checked={selected} onChange={onSelectRow} />
         </TableCell>
 
+        {/* Columna Región (nombre) – SIN navegación ahora */}
         <TableCell component="th" scope="row">
           <Box
             sx={{
@@ -62,36 +69,46 @@ export function UserTableRow({ row, selected, onSelectRow, nameTo }: UserTableRo
             }}
           >
             <Avatar alt={row.name} src={row.avatarUrl} />
-            {nameTo ? (
-              <Link
-                component={RouterLink}
-                to={nameTo}
-                underline="hover"
-                color="inherit"
-                sx={{ fontWeight: 500 }}
-              >
-                {row.name}
-              </Link>
-            ) : (
-              row.name
-            )}
+            {row.name}
           </Box>
         </TableCell>
 
-        <TableCell>{row.company}</TableCell>
+        {/* Columna Líder – aquí va el clic para ir a Regional */}
+        <TableCell
+          onClick={onCompanyClick}
+          sx={
+            onCompanyClick
+              ? {
+                  cursor: 'pointer',
+                  textDecoration: 'none',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  },
+                }
+              : undefined
+          }
+        >
+          {row.company}
+        </TableCell>
 
         <TableCell>{row.role}</TableCell>
 
         <TableCell align="center">
           {row.isVerified ? (
-            <Iconify width={22} icon="solar:check-circle-bold" sx={{ color: 'success.main' }} />
+            <Iconify
+              width={22}
+              icon="solar:check-circle-bold"
+              sx={{ color: 'success.main' }}
+            />
           ) : (
             '-'
           )}
         </TableCell>
 
         <TableCell>
-          <Label color={(row.status === 'banned' && 'error') || 'success'}>{row.status}</Label>
+          <Label color={(row.status === 'banned' && 'error') || 'success'}>
+            {row.status}
+          </Label>
         </TableCell>
 
         <TableCell align="right">
