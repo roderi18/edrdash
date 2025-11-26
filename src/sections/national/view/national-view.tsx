@@ -71,8 +71,8 @@ export function NationalView() {
   //--------------------------------------------
   // CLICK PARA IR A NATIONAL INFO (columna "Región / Nivel Nacional...")
   //--------------------------------------------
-  const handleGoToNationalInfo = (nationalId: string) => {
-    navigate(`/nationalinfo/${nationalId}`);
+  const handleGoToNational = (nationalId: string) => {
+    navigate(`/national/${nationalId}`);
   };
 
   //--------------------------------------------
@@ -147,7 +147,7 @@ export function NationalView() {
                       selected={table.selected.includes(row.id)}
                       onSelectRow={() => table.onSelectRow(row.id)}
                       // 🔹 Primera columna: nombre → /nationalinfo/:id
-                      onNameClick={() => handleGoToNationalInfo(row.id)}
+                      onNameClick={() => handleGoToNational(row.id)}
                       // 🔹 Segunda columna: "Regionales: X" → /regional/:id
                       onCompanyClick={() => handleGoToRegional(row.id)}
                     />

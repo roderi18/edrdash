@@ -1,4 +1,3 @@
-// src/sections/national/mock-national-sections.ts
 
 export type SectionRow = {
   id: string;
